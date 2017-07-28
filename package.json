@@ -1,0 +1,30 @@
+{
+  "name": "find-devs-by-project",
+  "version": "0.0.1",
+  "homepage": "https://github.com/burashka/find-devs-by-project",
+  "description": "Script for find developers on GitHub by project",
+  "author": {
+    "name": "Evgeny Uspenskiy",
+    "email": "burashka-lcme@yandex.ru"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/burashka/find-devs-by-project.git"
+  },
+  "bugs": {
+    "url": "https://github.com/burashka/find-devs-by-project/issues"
+  },
+  "main": "./app.js",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/burashka/find-devs-by-project/blob/master/LICENSE"
+    }
+  ],
+  "devDependencies": {
+    "github": "^9.2.0"
+  },
+  "scripts": {
+    "start": "node app.js"
+  }
+}

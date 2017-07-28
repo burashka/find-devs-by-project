@@ -1,66 +1,64 @@
-var GitHubApi = require("github");
+const GitHubApi = require("github");
 
-var github = new GitHubApi({
+const github = new GitHubApi({
 	version: "3.0.0",
 	// debug: true
 });
 
-github.authenticate({
-    type: "basic",
-    username: "login",
-    password: "password"
-});
+async function find({ authenticate, repos, locations }) {
+	github.authenticate(authenticate);
 
+	locations = Array.isArray(locations) ? locations : [locations];
+	locations = new RegExp(locations.join("|"), "gi");
 
+	function checkUser(username){
+		return github.users.getForUser({ username }).then(
+			({data}) => {
+				if (data.location && locations.test(data.location)){
+					console.log(data.login, data.html_url);
+					return data;
+				}
 
+				return false;
+			},
+			err => console.log(err)
+		);
+	}
 
-var repos = ["dojo/dojo", "dojo/dijit", "dojo/dojox", "dojo/util"],
-	location = ["Russia", "Moscow"];
+	const promiseUsers = repos.map(repository => {
+		const [owner, repo] = repository.split("/");
 
-location = new RegExp(location.join("|"), "gi");
+/*		Promise.all([
+			github.repos.getContributors({ repo, owner }),
+			github.repos.getForks({ repo, owner })
+		]).then(
+			([contributors, forks]) => {
+				contributors.data.concat(forks.data).forEach(item => checkUser(item.login || item.owner.login));
+			},
+			err => console.log(err)
+		);	*/
 
-function checkUser(login){
-	console.log(login);
-	github.user.getFrom({
-		user: login
-	}, function(err, data){
-		if(err){
-			console.log(err);
-			return;
-		}
-		if(!data.location) return;
-		if(location.test(data.location)) console.log(data.login, data.html_url);
+		const promiseUsersFromContribs = github.repos.getContributors({ repo, owner })
+			.then(({ data }) => data.map(({login}) => checkUser(login)))
+			.then(
+				promiseUsers => Promise.all(promiseUsers),
+				err => console.log(err)
+			);
+
+		const promiseUsersFromForks = github.repos.getForks({repo, owner})
+			.then(({data}) => data.map(({owner}) => checkUser(owner.login)))
+			.then(
+				promiseUsers => Promise.all(promiseUsers),
+				err => console.log(err)
+			);
+
+		return Promise.all([ promiseUsersFromContribs, promiseUsersFromForks ]).then(
+			([ usersFromContribs, usersFromForks ]) => usersFromContribs.concat(usersFromForks).filter(user => !!user),
+			err => console.log(err)
+		);
 	});
+
+	return [].concat(await Promise.all(promiseUsers));
 }
 
-repos.forEach(function(repo){
-	repo = repo.split("/");
-
-	github.repos.getContributors({
-		repo: repo[1],
-		user: repo[0]
-	}, function(err, data){
-		if(err){
-			console.log(err);
-			return;
-		}
-
-		data.forEach(function(user){
-			checkUser(user.login);
-		});
-	});
-
-	github.repos.getForks({
-		repo: repo[1],
-		user: repo[0]
-	}, function(err, data){
-		if(err){
-			console.log(err);
-			return;
-		}
-
-		data.forEach(function(fork){
-			checkUser(fork.owner.login);
-		});
-	});
-});
+module.exports = find;
