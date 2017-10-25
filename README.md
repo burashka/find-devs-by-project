@@ -4,9 +4,10 @@ Find Developers by Projects
 Description
 -----------
 
-Having the need/want to look up good developers on GitHub. We require candidates to know certain frameworks or libraries.
-It is logical to look for developers among their contributors. This module allows you to find all the contributors of
-these projects from the specified region.
+Do you ever want to find local developers who contribute to frameworks that you use in your projects?
+We require candidates to know certain frameworks or libraries. This module allows you to find all the contributors of
+these projects from the specified region. It is logical to look for developers among their contributors. This module
+allows you to find all the contributors of these projects from the specified region.
 
 Parameters
 ----------
