@@ -1,6 +1,6 @@
 {
   "name": "find-devs-by-project",
-  "version": "0.0.1",
+  "version": "1.0.2",
   "homepage": "https://github.com/burashka/find-devs-by-project",
   "description": "Script for find developers on GitHub by project",
   "author": {
@@ -23,8 +23,5 @@
   ],
   "devDependencies": {
     "github": "^9.2.0"
-  },
-  "scripts": {
-    "start": "node app.js"
   }
 }
