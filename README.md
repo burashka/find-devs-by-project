@@ -32,6 +32,10 @@ find({
 	repos: ["dojo/dojo", "dojo/dijit", "dojo/dojox", "dojo/util"],
 	locations: ["Russia", "Moscow"]
 }).then(results => {
-	results.forEach(repo => repo.forEach(user => console.log(user.login, user.html_url, "\n")));
+	results.forEach(repo => {
+	    repo.forEach(user => {
+	        console.log(user.login, user.html_url, "\n");
+        });
+    });
 });
 ```
